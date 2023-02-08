@@ -1,0 +1,404 @@
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*!50717 SELECT COUNT(*) INTO @rocksdb_has_p_s_session_variables FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'performance_schema' AND TABLE_NAME = 'session_variables' */;
+/*!50717 SET @rocksdb_get_is_supported = IF (@rocksdb_has_p_s_session_variables, 'SELECT COUNT(*) INTO @rocksdb_is_supported FROM performance_schema.session_variables WHERE VARIABLE_NAME=\'rocksdb_bulk_load\'', 'SELECT 0') */;
+/*!50717 PREPARE s FROM @rocksdb_get_is_supported */;
+/*!50717 EXECUTE s */;
+/*!50717 DEALLOCATE PREPARE s */;
+/*!50717 SET @rocksdb_enable_bulk_load = IF (@rocksdb_is_supported, 'SET SESSION rocksdb_bulk_load = 1', 'SET @rocksdb_dummy_bulk_load = 0') */;
+/*!50717 PREPARE s FROM @rocksdb_enable_bulk_load */;
+/*!50717 EXECUTE s */;
+/*!50717 DEALLOCATE PREPARE s */;
+DROP TABLE IF EXISTS `failed_jobs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `failed_jobs` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `film_formats`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `film_formats` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `film_genre`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `film_genre` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `film_id` tinyint(3) unsigned NOT NULL,
+  `genre_id` tinyint(3) unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `film_genre_film_id_index` (`film_id`),
+  KEY `film_genre_genre_id_index` (`genre_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `film_statuses`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `film_statuses` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `films`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `films` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `format_id` tinyint(3) unsigned NOT NULL,
+  `user_id` tinyint(3) unsigned NOT NULL,
+  `title` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `duration` int(11) NOT NULL COMMENT 'длительность, мин',
+  `kdm` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `file` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `image` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `films_status_id_index` (`is_active`),
+  KEY `films_format_id_index` (`format_id`),
+  KEY `films_user_id_index` (`user_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `genres`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `genres` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `halls`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `halls` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` tinyint(3) unsigned NOT NULL,
+  `title` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `seats` int(11) NOT NULL COMMENT 'количество мест',
+  `start` time NOT NULL COMMENT 'начало работы',
+  `end` time NOT NULL COMMENT 'окончание работы',
+  `mark_video` int(11) NOT NULL COMMENT 'отметка видео, с',
+  `mark_audio` int(11) NOT NULL COMMENT 'отметка аудио, с',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `halls_user_id_index` (`user_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `migrations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `migrations` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `migration` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `password_resets`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `password_resets` (
+  `email` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  KEY `password_resets_email_index` (`email`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `seance_statuses`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `seance_statuses` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `color` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `seances`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `seances` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `status_id` tinyint(3) unsigned DEFAULT NULL,
+  `user_id` int(11) NOT NULL,
+  `hall_id` tinyint(3) unsigned DEFAULT NULL,
+  `film_id` tinyint(3) unsigned NOT NULL,
+  `is_repeat` tinyint(1) NOT NULL DEFAULT '1',
+  `day` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'день недели',
+  `start` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `duration_advertising` int(11) NOT NULL COMMENT 'продолжительность рекламы, мин',
+  `duration_service` int(11) DEFAULT NULL COMMENT 'продолжительность обслуживания, мин',
+  `tickets_amt` int(11) DEFAULT NULL COMMENT 'количество проданных билетов',
+  `visitors_amt` int(11) DEFAULT NULL COMMENT 'количество посетителей',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `seances_status_id_index` (`status_id`),
+  KEY `seances_hall_id_index` (`hall_id`),
+  KEY `seances_film_id_index` (`film_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `user_roles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_roles` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `slug` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `titles` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title_r` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `users` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `role_id` tinyint(3) unsigned NOT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email_verified_at` timestamp NULL DEFAULT NULL,
+  `password` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `open_password` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `users_email_unique` (`email`),
+  KEY `users_role_id_index` (`role_id`),
+  KEY `users_status_id_index` (`is_active`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!50112 SET @disable_bulk_load = IF (@is_rocksdb_supported, 'SET SESSION rocksdb_bulk_load = @old_rocksdb_bulk_load', 'SET @dummy_rocksdb_bulk_load = 0') */;
+/*!50112 PREPARE s FROM @disable_bulk_load */;
+/*!50112 EXECUTE s */;
+/*!50112 DEALLOCATE PREPARE s */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*!50717 SELECT COUNT(*) INTO @rocksdb_has_p_s_session_variables FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'performance_schema' AND TABLE_NAME = 'session_variables' */;
+/*!50717 SET @rocksdb_get_is_supported = IF (@rocksdb_has_p_s_session_variables, 'SELECT COUNT(*) INTO @rocksdb_is_supported FROM performance_schema.session_variables WHERE VARIABLE_NAME=\'rocksdb_bulk_load\'', 'SELECT 0') */;
+/*!50717 PREPARE s FROM @rocksdb_get_is_supported */;
+/*!50717 EXECUTE s */;
+/*!50717 DEALLOCATE PREPARE s */;
+/*!50717 SET @rocksdb_enable_bulk_load = IF (@rocksdb_is_supported, 'SET SESSION rocksdb_bulk_load = 1', 'SET @rocksdb_dummy_bulk_load = 0') */;
+/*!50717 PREPARE s FROM @rocksdb_enable_bulk_load */;
+/*!50717 EXECUTE s */;
+/*!50717 DEALLOCATE PREPARE s */;
+
+LOCK TABLES `failed_jobs` WRITE;
+/*!40000 ALTER TABLE `failed_jobs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `failed_jobs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `film_formats` WRITE;
+/*!40000 ALTER TABLE `film_formats` DISABLE KEYS */;
+INSERT INTO `film_formats` VALUES (1,'2D',NULL,NULL),(2,'3D',NULL,NULL);
+/*!40000 ALTER TABLE `film_formats` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `film_genre` WRITE;
+/*!40000 ALTER TABLE `film_genre` DISABLE KEYS */;
+INSERT INTO `film_genre` VALUES (1,2,2,NULL,NULL),(2,2,4,NULL,NULL),(3,2,6,NULL,NULL),(4,1,7,NULL,NULL),(5,3,26,NULL,NULL),(6,4,4,NULL,NULL),(7,5,3,NULL,NULL),(8,5,5,NULL,NULL),(9,6,17,NULL,NULL);
+/*!40000 ALTER TABLE `film_genre` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `film_statuses` WRITE;
+/*!40000 ALTER TABLE `film_statuses` DISABLE KEYS */;
+/*!40000 ALTER TABLE `film_statuses` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `films` WRITE;
+/*!40000 ALTER TABLE `films` DISABLE KEYS */;
+INSERT INTO `films` VALUES (1,1,1,1,'Название фильма','Описание',120,'KDM','Расположение',NULL,'2021-03-25 06:09:08','2021-03-25 06:18:12'),(2,1,1,1,'Название фильма','Описание',120,'KDM','Расположение',NULL,'2021-03-25 06:09:30','2021-03-25 06:09:30'),(3,1,1,1,'Тест','Очень тестовый фильм',120,'Test','Test',NULL,'2021-06-23 07:02:31','2021-06-23 07:02:31'),(4,1,2,1,'scsd','e2323',23,'322','2323',NULL,'2021-08-16 11:52:43','2021-08-16 11:52:43'),(5,1,2,2,'film','discription',123,'what is it?','videos\\/bZWDuY0X4pGblhMEKqWepkNwSRrYY5uS4LgH1qAo.mp4','\"images\\/KaZtVRs6DrIT0FV8rD1APe4zEuHcyqe6ETsgyYPO.jpg\"','2021-08-24 07:49:31','2021-08-24 07:49:31'),(6,1,1,1,'Նկար յուղաներկով կտավի վրա','dgfgr',123,'fdg','ff',NULL,'2021-08-25 04:55:13','2021-08-25 04:55:13');
+/*!40000 ALTER TABLE `films` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `genres` WRITE;
+/*!40000 ALTER TABLE `genres` DISABLE KEYS */;
+INSERT INTO `genres` VALUES (1,'Аниме','2021-03-24 15:23:18','2021-03-29 13:12:47'),(2,'Биографический','2021-03-24 15:24:51','2021-03-29 13:12:56'),(3,'Боевик','2021-03-24 15:25:02','2021-03-29 13:13:03'),(4,'Вестерн','2021-03-24 15:25:13','2021-03-29 13:13:10'),(5,'Военный','2021-03-24 15:25:23','2021-03-29 13:13:16'),(6,'Детектив','2021-03-24 15:25:31','2021-03-29 13:13:23'),(7,'Детский','2021-03-24 15:25:38','2021-03-29 13:13:30'),(8,'Документальный','2021-03-24 15:25:45','2021-03-29 13:13:36'),(9,'Драма','2021-03-24 15:25:53','2021-03-29 13:13:43'),(10,'Исторический','2021-03-24 15:26:03','2021-03-29 13:13:49'),(11,'Кинокомикс','2021-03-24 15:26:15','2021-03-29 13:13:59'),(12,'Комедия','2021-03-24 15:26:25','2021-03-29 13:14:05'),(13,'Концерт','2021-03-24 15:26:33','2021-03-29 13:14:11'),(14,'Короткометражный','2021-03-24 15:26:41','2021-03-29 13:14:18'),(15,'Криминал','2021-03-24 15:26:51','2021-03-29 13:14:25'),(16,'Мелодрама','2021-03-24 15:26:59','2021-03-29 13:14:32'),(17,'Мистика','2021-03-24 15:27:06','2021-03-24 15:27:06'),(18,'Мультфильм','2021-03-24 15:27:17','2021-03-24 15:27:17'),(19,'Мюзикл','2021-03-24 15:27:23','2021-03-24 15:27:23'),(20,'Научный','2021-03-24 15:27:31','2021-03-24 15:27:31'),(21,'Нуар','2021-03-24 15:27:38','2021-03-24 15:27:38'),(22,'Приключения','2021-03-24 15:27:45','2021-03-24 15:27:45'),(23,'Семейный','2021-03-24 15:27:52','2021-03-24 15:27:52'),(24,'Спорт','2021-03-24 15:28:00','2021-03-24 15:28:00'),(25,'Триллер','2021-03-24 15:28:11','2021-03-24 15:28:11'),(26,'ужасы','2021-03-24 15:28:21','2021-03-24 15:28:21'),(27,'фантастика','2021-03-24 15:28:28','2021-03-24 15:28:28'),(28,'фэнтези','2021-03-24 15:28:35','2021-03-24 15:28:35');
+/*!40000 ALTER TABLE `genres` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `halls` WRITE;
+/*!40000 ALTER TABLE `halls` DISABLE KEYS */;
+INSERT INTO `halls` VALUES (1,2,'hall 1',33,'11:35:00','12:35:00',1,1,'2021-08-24 08:35:00','2021-08-24 08:35:00'),(2,2,'hall 2',33,'11:35:07','12:35:07',1,1,'2021-08-24 08:35:07','2021-08-24 08:35:07'),(3,2,'hall 3',33,'11:35:14','12:35:14',1,1,'2021-08-24 08:35:14','2021-08-24 08:35:14');
+/*!40000 ALTER TABLE `halls` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `migrations` WRITE;
+/*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
+INSERT INTO `migrations` VALUES (1,'2014_10_12_000000_create_users_table',1),(2,'2014_10_12_100000_create_password_resets_table',1),(3,'2019_08_19_000000_create_failed_jobs_table',1),(4,'2021_03_23_173114_create_halls_table',1),(5,'2021_03_23_173157_create_films_table',1),(6,'2021_03_23_173302_create_seances_table',1),(7,'2021_03_23_180753_create_genres_table',1),(8,'2021_03_23_205451_create_film_genre_table',1);
+/*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `password_resets` WRITE;
+/*!40000 ALTER TABLE `password_resets` DISABLE KEYS */;
+/*!40000 ALTER TABLE `password_resets` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `seance_statuses` WRITE;
+/*!40000 ALTER TABLE `seance_statuses` DISABLE KEYS */;
+INSERT INTO `seance_statuses` VALUES (1,'primary','ожидается','2021-03-24 16:29:48','2021-03-24 16:29:48'),(2,'success','идёт','2021-03-24 16:29:55','2021-03-24 16:29:55'),(3,'default','завершён','2021-03-24 16:30:03','2021-03-24 16:30:03'),(4,'danger','отменён','2021-03-24 16:30:14','2021-03-24 16:30:14');
+/*!40000 ALTER TABLE `seance_statuses` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `seances` WRITE;
+/*!40000 ALTER TABLE `seances` DISABLE KEYS */;
+INSERT INTO `seances` VALUES (1,2,1,1,3,1,'Вторник','12:45',15,20,NULL,NULL,'2021-03-25 07:42:19','2021-06-23 07:03:11'),(2,1,1,2,5,1,'Вторник','23:11',3,4,NULL,NULL,'2021-08-24 08:47:47','2021-08-24 08:47:47'),(3,3,1,2,5,1,'Вторник','04:04',22,44,NULL,NULL,'2021-08-24 08:58:54','2021-08-24 08:58:54');
+/*!40000 ALTER TABLE `seances` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `user_roles` WRITE;
+/*!40000 ALTER TABLE `user_roles` DISABLE KEYS */;
+INSERT INTO `user_roles` VALUES (1,'users','Клиент','Клиенты','Клиента','2021-03-24 15:50:36','2021-03-24 15:50:36'),(2,'cashiers','Кассир','Кассиры','Кассира','2021-03-24 15:50:55','2021-03-24 15:50:55'),(3,'operators','Оператор','Операторы','Оператора','2021-03-24 15:51:03','2021-03-24 15:51:03'),(4,'creators','Правообладатель','Правообладатели','Правообладателя','2021-03-24 15:51:16','2021-03-24 15:51:16'),(5,'admins','Администратор','Администраторы','Администратора','2021-03-24 15:51:23','2021-03-24 15:51:23');
+/*!40000 ALTER TABLE `user_roles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES (1,5,1,'demy2','demy2@ukr.net',NULL,'$2y$10$RCmV4eduuYHOjenrePVOI.Zs59W8gQtHsTMVw4leUqHnpkjlppogK',NULL,'DvqErMXlHIix1XvvNeP4D2W6v6VhwU1vdC483x3YL3gpPxoy4ixC81LVSwxM','2021-03-25 03:30:58','2021-08-23 13:08:25'),(2,5,1,'admin','admin@mail.ru',NULL,'$2y$10$RCmV4eduuYHOjenrePVOI.Zs59W8gQtHsTMVw4leUqHnpkjlppogK',NULL,'dVMmH7VF4almsK1W5ceKXRY8M1uzgxmMOepDakhn6vK0FZ5PlIlZFCJeJlUF','2021-03-29 02:10:10','2021-03-29 02:10:10');
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!50112 SET @disable_bulk_load = IF (@is_rocksdb_supported, 'SET SESSION rocksdb_bulk_load = @old_rocksdb_bulk_load', 'SET @dummy_rocksdb_bulk_load = 0') */;
+/*!50112 PREPARE s FROM @disable_bulk_load */;
+/*!50112 EXECUTE s */;
+/*!50112 DEALLOCATE PREPARE s */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*!50717 SELECT COUNT(*) INTO @rocksdb_has_p_s_session_variables FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'performance_schema' AND TABLE_NAME = 'session_variables' */;
+/*!50717 SET @rocksdb_get_is_supported = IF (@rocksdb_has_p_s_session_variables, 'SELECT COUNT(*) INTO @rocksdb_is_supported FROM performance_schema.session_variables WHERE VARIABLE_NAME=\'rocksdb_bulk_load\'', 'SELECT 0') */;
+/*!50717 PREPARE s FROM @rocksdb_get_is_supported */;
+/*!50717 EXECUTE s */;
+/*!50717 DEALLOCATE PREPARE s */;
+/*!50717 SET @rocksdb_enable_bulk_load = IF (@rocksdb_is_supported, 'SET SESSION rocksdb_bulk_load = 1', 'SET @rocksdb_dummy_bulk_load = 0') */;
+/*!50717 PREPARE s FROM @rocksdb_enable_bulk_load */;
+/*!50717 EXECUTE s */;
+/*!50717 DEALLOCATE PREPARE s */;
+/*!50112 SET @disable_bulk_load = IF (@is_rocksdb_supported, 'SET SESSION rocksdb_bulk_load = @old_rocksdb_bulk_load', 'SET @dummy_rocksdb_bulk_load = 0') */;
+/*!50112 PREPARE s FROM @disable_bulk_load */;
+/*!50112 EXECUTE s */;
+/*!50112 DEALLOCATE PREPARE s */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*!50717 SELECT COUNT(*) INTO @rocksdb_has_p_s_session_variables FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'performance_schema' AND TABLE_NAME = 'session_variables' */;
+/*!50717 SET @rocksdb_get_is_supported = IF (@rocksdb_has_p_s_session_variables, 'SELECT COUNT(*) INTO @rocksdb_is_supported FROM performance_schema.session_variables WHERE VARIABLE_NAME=\'rocksdb_bulk_load\'', 'SELECT 0') */;
+/*!50717 PREPARE s FROM @rocksdb_get_is_supported */;
+/*!50717 EXECUTE s */;
+/*!50717 DEALLOCATE PREPARE s */;
+/*!50717 SET @rocksdb_enable_bulk_load = IF (@rocksdb_is_supported, 'SET SESSION rocksdb_bulk_load = 1', 'SET @rocksdb_dummy_bulk_load = 0') */;
+/*!50717 PREPARE s FROM @rocksdb_enable_bulk_load */;
+/*!50717 EXECUTE s */;
+/*!50717 DEALLOCATE PREPARE s */;
+/*!50112 SET @disable_bulk_load = IF (@is_rocksdb_supported, 'SET SESSION rocksdb_bulk_load = @old_rocksdb_bulk_load', 'SET @dummy_rocksdb_bulk_load = 0') */;
+/*!50112 PREPARE s FROM @disable_bulk_load */;
+/*!50112 EXECUTE s */;
+/*!50112 DEALLOCATE PREPARE s */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+

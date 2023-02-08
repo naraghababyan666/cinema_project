@@ -1,0 +1,117 @@
+@import "./fonts.scss";
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  letter-spacing: 0.03em;
+  &::selection {
+    background: #ffffff;
+    color: #3d3d3d;
+  }
+}
+html,
+body {
+  overflow-x: hidden;
+  background: #090909;
+}
+
+.container {
+  max-width: 1140px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+.container-fluid{
+  max-width: 100%;
+  width: 100%;
+  margin: auto;
+}
+
+.text-semi-bold {
+  font-family: "SemiBold" !important;
+}
+.text-bold {
+  font-family: "Bold";
+}
+.text-medium-italic {
+  font-family: "Medium-italic";
+}
+.text-regular {
+  font-family: "Regular";
+}
+.text-regular-italic {
+    font-family: "Regular-italic";
+}
+.text-medium {
+  font-family: "Medium";
+}
+
+.text-white {
+  color: #ffffff;
+}
+.bg-black {
+  background-color: #000000;
+}
+.bg-red {
+    background-color: #D8004E;
+}
+.text-red {
+    color: #D8004E;
+}
+.text-gray {
+    color: #999999;
+}
+.text-light-gray{
+  color:#ffffff;
+  font-size: 14px;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: 0.07em;
+}
+h1, .h1 {
+  font-size: 32px;
+  letter-spacing: 0.07em;
+}
+
+h2, h2 {
+  font-size: 24px;
+  letter-spacing: 0.07em;
+}
+
+h3, .h3 {
+  font-size: 18px;
+  letter-spacing: 0.07em;
+}
+
+.p-sm {
+  font-size: 16px;
+}
+
+.p-xs {
+  font-size: 14px;
+}
+
+@media screen and (max-width: 834px) {
+  h1, .h1 {
+    font-size: 24px;
+  }
+  h2, .h2 {
+    font-size: 18px;
+  }
+  h3, .h3 {
+    font-size: 18px;
+  }
+  .p-sm {
+    font-size: 14px;
+  }
+}
+@media screen and (max-width: 480px) {
+  h1, .h1 {
+    font-size: 16px;
+  }
+  h3, .h3 {
+    font-size: 16px;
+  }
+}
